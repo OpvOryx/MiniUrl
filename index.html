@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MiniUrl — Free Link Shortener</title>
+  <meta name="description" content="MiniUrl is a sleek, free and fast link shortener with no ads. Instantly convert long URLs into short ones.">
+  <meta property="og:title" content="MiniUrl — Free Link Shortener" />
+  <meta property="og:description" content="Sleek and simple dark-themed link shortener. Try it now!" />
+  <meta property="og:image" content="https://yourdomain.com/preview.png" />
+  <meta property="og:url" content="https://yourdomain.com/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="https://api.iconify.design/mdi:link-variant.svg?color=white" />
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #1a001f;
+      font-family: 'Segoe UI', sans-serif;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 3rem;
+      color: #d4b3ff;
+      text-shadow: 0 0 10px #b25cff;
+      margin-bottom: 10px;
+    }
+
+    p.description {
+      color: #ccc;
+      max-width: 400px;
+      margin-bottom: 30px;
+    }
+
+    input {
+      padding: 12px 20px;
+      width: 300px;
+      border: none;
+      border-radius: 12px;
+      background: #320045;
+      color: white;
+      font-size: 16px;
+      box-shadow: 0 0 10px #a855f7;
+      outline: none;
+      transition: box-shadow 0.3s ease;
+    }
+
+    input:focus {
+      box-shadow: 0 0 15px #c084fc;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 12px;
+      background: #7c3aed;
+      color: white;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 0 10px #a855f7;
+    }
+
+    button:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 0 18px #c084fc;
+    }
+
+    button::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(120deg, rgba(255,255,255,0.2), rgba(255,255,255,0));
+      transform: skewX(-20deg);
+      transition: left 0.4s ease;
+    }
+
+    button:hover::after {
+      left: 100%;
+    }
+
+    .output {
+      margin-top: 25px;
+      font-weight: bold;
+      color: #9effc6;
+      word-break: break-all;
+    }
+
+    .error {
+      color: #ff7b7b;
+    }
+
+    a {
+      color: #a78bfa;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 500px) {
+      input, button {
+        width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>MiniUrl</h1>
+  <p class="description">Free & Fast URL shortener based on TinyUrl with a dark modern vibe. Paste your long URL and get a neat one instantly!</p>
+   <p class="description">Made By OPV</p>
+  <input id="longUrl" type="text" placeholder="Paste your long URL here..." />
+  <button onclick="shorten()">Shorten URL</button>
+  <div id="result" class="output"></div>
+
+  <script>
+    async function shorten() {
+      const input = document.getElementById('longUrl');
+      const result = document.getElementById('result');
+      const url = input.value.trim();
+      result.textContent = '';
+      result.className = 'output';
+
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        result.textContent = '❌ Please enter a valid URL (must include http or https)';
+        result.classList.add('error');
+        return;
+      }
+
+      try {
+        const res = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(url)}`);
+        const shortUrl = await res.text();
+
+        if (!shortUrl.startsWith('http')) throw new Error('API error');
+
+        result.innerHTML = ` Your MiniUrl: <a href="${shortUrl}" target="_blank">${shortUrl}</a>`;
+      } catch (err) {
+        result.textContent = '❌ Failed to shorten. Try again later.';
+        result.classList.add('error');
+      }
+    }
+  </script>
+</body>
+</html>
